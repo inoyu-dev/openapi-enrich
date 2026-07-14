@@ -1,0 +1,58 @@
+<!--
+  Copyright 2026 Inoyu
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 280" role="img" aria-labelledby="title desc">
+  <title id="title">openapi-enrich pipeline</title>
+  <desc id="desc">Javadoc sources are scanned at build time into a JSON pack, packaged in the JAR, then merged at runtime by EnrichingOpenApiCustomizer into CXF OpenAPI.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="920" height="280" rx="12" fill="#f8fafc"/>
+
+  <text x="46" y="36" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#0f766e" font-weight="700">BUILD TIME</text>
+  <rect x="36" y="52" width="200" height="88" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="56" y="88" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#0f172a" font-weight="600">JAX-RS sources</text>
+  <text x="56" y="110" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">Javadoc + @api.status</text>
+  <text x="56" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">@api.example tags</text>
+
+  <line x1="236" y1="96" x2="286" y2="96" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow)"/>
+
+  <rect x="288" y="52" width="220" height="88" rx="10" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.75"/>
+  <text x="308" y="88" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#0f172a" font-weight="600">openapi-enrich:generate</text>
+  <text x="308" y="110" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">Maven Mojo scans sources</text>
+  <text x="308" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">writes enrichment pack</text>
+
+  <line x1="508" y1="96" x2="558" y2="96" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow)"/>
+
+  <rect x="560" y="52" width="324" height="88" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="580" y="88" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#0f172a" font-weight="600">openapi-doc.json</text>
+  <text x="580" y="110" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">META-INF/openapi-enrich/...</text>
+  <text x="580" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">packaged inside your JAR</text>
+
+  <text x="46" y="186" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#0f766e" font-weight="700">RUNTIME</text>
+  <rect x="36" y="202" width="410" height="56" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="56" y="236" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#0f172a" font-weight="600">CXF OpenApiFeature</text>
+  <text x="250" y="236" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">+ EnrichingOpenApiCustomizer</text>
+
+  <line x1="446" y1="230" x2="556" y2="230" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <path d="M722 140 V176 H241" stroke="#475569" stroke-width="1.75" fill="none"/>
+  <line x1="241" y1="176" x2="241" y2="200" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow)"/>
+
+  <rect x="560" y="202" width="324" height="56" rx="10" fill="#0f172a"/>
+  <text x="580" y="236" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#f8fafc" font-weight="600">Richer /openapi.json</text>
+  <text x="760" y="236" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#cbd5e1">summaries / statuses / examples</text>
+</svg>
