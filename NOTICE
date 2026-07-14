@@ -1,0 +1,13 @@
+OpenAPI Enrich
+Copyright 2026 Inoyu
+
+This product includes software developed at
+Inoyu (https://inoyu.dev/).
+
+Licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+This product optionally depends at compile/runtime on third-party libraries
+(for example Jackson, Apache CXF, SLF4J, JavaParser, OSGi API). Those
+components remain under their own licenses; see each dependency's notices
+when bundling or redistributing.
