@@ -55,7 +55,8 @@
 
     <scm>
         <connection>scm:git:https://github.com/inoyu-dev/openapi-enrich.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/inoyu-dev/openapi-enrich.git</developerConnection>
+        <!-- HTTPS: day-to-day remotes and release:prepare pushes (SSH key not required). -->
+        <developerConnection>scm:git:https://github.com/inoyu-dev/openapi-enrich.git</developerConnection>
         <url>https://github.com/inoyu-dev/openapi-enrich</url>
         <tag>HEAD</tag>
     </scm>
@@ -86,6 +87,7 @@
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>3.2.7</maven.gpg.plugin.version>
+        <maven.release.plugin.version>3.1.1</maven.release.plugin.version>
         <apache.rat.plugin.version>0.16.1</apache.rat.plugin.version>
         <central.autoPublish>false</central.autoPublish>
     </properties>
@@ -189,6 +191,18 @@
                     <version>${maven.gpg.plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven.release.plugin.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <releaseProfiles>release</releaseProfiles>
+                        <goals>deploy</goals>
+                        <pushChanges>true</pushChanges>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
                     <version>${central.publishing.plugin.version}</version>
@@ -197,6 +211,10 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -250,6 +268,7 @@
                                 <exclude>**/.git/**</exclude>
                                 <exclude>**/target/**</exclude>
                                 <exclude>**/*.md</exclude>
+                                <exclude>**/*.svg</exclude>
                                 <exclude>**/LICENSE</exclude>
                                 <exclude>**/NOTICE</exclude>
                             </excludes>
