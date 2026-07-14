@@ -222,6 +222,19 @@ public class JaxrsSourceScanner {
                                     Map<String, String> typeVarBindings,
                                     Set<String> seenMethodNames,
                                     Set<String> seenOperationKeys) {
+        emitResourceMethod(method, concreteFqcn, classPath, pack, schemaRefs, typeVarBindings,
+                seenMethodNames, seenOperationKeys, null);
+    }
+
+    private void emitResourceMethod(MethodDeclaration method,
+                                    String concreteFqcn,
+                                    String classPath,
+                                    DocPack pack,
+                                    Set<String> schemaRefs,
+                                    Map<String, String> typeVarBindings,
+                                    Set<String> seenMethodNames,
+                                    Set<String> seenOperationKeys,
+                                    ClassOrInterfaceDeclaration concreteType) {
         Optional<String> http = httpMethod(method);
         if (http.isEmpty()) {
             return;
@@ -245,10 +258,28 @@ public class JaxrsSourceScanner {
         op.setOperationKey(operationKey);
 
         CompilationUnit cu = method.findCompilationUnit().orElse(null);
-        applyJavadoc(method, op, schemaRefs, typeVarBindings);
+        // Prefer subclass override Javadoc (examples / statuses) when inherited annotations come from a parent.
+        MethodDeclaration docSource = method;
+        if (concreteType != null) {
+            Optional<MethodDeclaration> override = findOverrideMethod(concreteType, methodName);
+            if (override.isPresent() && override.get().getJavadoc().isPresent()) {
+                docSource = override.get();
+            }
+        }
+        applyJavadoc(docSource, op, schemaRefs, typeVarBindings);
         ensureDefaultResponse(method, op, schemaRefs, typeVarBindings);
         collectRequestBodySchema(method, op, schemaRefs, typeVarBindings, cu);
         pack.getOperations().add(op);
+    }
+
+    private static Optional<MethodDeclaration> findOverrideMethod(ClassOrInterfaceDeclaration concreteType,
+                                                                  String methodName) {
+        for (MethodDeclaration m : concreteType.getMethods()) {
+            if (methodName.equals(m.getNameAsString())) {
+                return Optional.of(m);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -293,7 +324,7 @@ public class JaxrsSourceScanner {
 
             for (MethodDeclaration method : parent.getMethods()) {
                 emitResourceMethod(method, concreteFqcn, classPath, pack, schemaRefs, bindings,
-                        seenMethodNames, seenOperationKeys);
+                        seenMethodNames, seenOperationKeys, type);
             }
 
             current = parent;
@@ -1454,15 +1485,48 @@ public class JaxrsSourceScanner {
         if (path == null || path.isBlank()) {
             return "/";
         }
-        String[] segments = path.split("/");
         StringBuilder sb = new StringBuilder();
-        for (String segment : segments) {
-            if (segment == null || segment.isEmpty()) {
+        int i = 0;
+        while (i < path.length()) {
+            char c = path.charAt(i);
+            if (c == '/') {
+                i++;
                 continue;
             }
-            sb.append('/').append(segment);
+            if (c == '{') {
+                int depth = 1;
+                int start = i;
+                i++;
+                while (i < path.length() && depth > 0) {
+                    char ch = path.charAt(i);
+                    if (ch == '{') {
+                        depth++;
+                    } else if (ch == '}') {
+                        depth--;
+                    }
+                    i++;
+                }
+                sb.append('/').append(stripPathParamRegex(path.substring(start, i)));
+                continue;
+            }
+            int start = i;
+            while (i < path.length() && path.charAt(i) != '/') {
+                i++;
+            }
+            sb.append('/').append(path, start, i);
         }
         return sb.length() == 0 ? "/" : sb.toString();
+    }
+
+    private static String stripPathParamRegex(String segment) {
+        if (segment.length() < 3 || segment.charAt(0) != '{' || segment.charAt(segment.length() - 1) != '}') {
+            return segment;
+        }
+        int colon = segment.indexOf(':');
+        if (colon <= 1) {
+            return segment;
+        }
+        return "{" + segment.substring(1, colon) + "}";
     }
 
     private static String inferSchemaClass(Type returnType) {

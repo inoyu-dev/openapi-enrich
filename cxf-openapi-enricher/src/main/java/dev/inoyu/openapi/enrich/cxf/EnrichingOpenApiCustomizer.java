@@ -554,14 +554,47 @@ public class EnrichingOpenApiCustomizer extends OpenApiCustomizer {
         if (path == null || path.isBlank()) {
             return "/";
         }
-        String[] segments = path.split("/");
         StringBuilder sb = new StringBuilder();
-        for (String segment : segments) {
-            if (segment == null || segment.isEmpty()) {
+        int i = 0;
+        while (i < path.length()) {
+            char c = path.charAt(i);
+            if (c == '/') {
+                i++;
                 continue;
             }
-            sb.append('/').append(segment);
+            if (c == '{') {
+                int depth = 1;
+                int start = i;
+                i++;
+                while (i < path.length() && depth > 0) {
+                    char ch = path.charAt(i);
+                    if (ch == '{') {
+                        depth++;
+                    } else if (ch == '}') {
+                        depth--;
+                    }
+                    i++;
+                }
+                sb.append('/').append(stripPathParamRegex(path.substring(start, i)));
+                continue;
+            }
+            int start = i;
+            while (i < path.length() && path.charAt(i) != '/') {
+                i++;
+            }
+            sb.append('/').append(path, start, i);
         }
         return sb.length() == 0 ? "/" : sb.toString();
+    }
+
+    private static String stripPathParamRegex(String segment) {
+        if (segment.length() < 3 || segment.charAt(0) != '{' || segment.charAt(segment.length() - 1) != '}') {
+            return segment;
+        }
+        int colon = segment.indexOf(':');
+        if (colon <= 1) {
+            return segment;
+        }
+        return "{" + segment.substring(1, colon) + "}";
     }
 }

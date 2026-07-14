@@ -43,8 +43,9 @@
   <text x="88" y="470" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#334155">id: { type: string }</text>
   <text x="250" y="470" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#94a3b8"># bare</text>
 
-  <polygon points="470,260 498,248 498,272" fill="#0f766e"/>
-  <text x="448" y="300" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">enrich</text>
+  <line x1="455" y1="260" x2="485" y2="260" stroke="#0f766e" stroke-width="3"/>
+  <polygon points="485,260 468,250 468,270" fill="#0f766e"/>
+  <text x="452" y="290" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#475569">enrich</text>
 
   <rect x="516" y="24" width="420" height="472" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
   <rect x="516" y="24" width="420" height="40" rx="12" fill="#0f766e"/>

@@ -94,6 +94,48 @@ class JaxrsSourceScannerTest {
         assertFalse(pack.getOperations().isEmpty());
     }
 
+
+    @Test
+    void stripsJaxrsPathParamRegexesToMatchOpenApi() throws Exception {
+        Path dir = Files.createTempDirectory("openapi-doc-scan-regex");
+        Path pkg = dir.resolve("com/example/api");
+        Files.createDirectories(pkg);
+        Files.writeString(pkg.resolve("GeoResource.java"), ""
+                + "package com.example.api;\n"
+                + "\n"
+                + "import javax.ws.rs.GET;\n"
+                + "import javax.ws.rs.Path;\n"
+                + "import javax.ws.rs.PathParam;\n"
+                + "\n"
+                + "@Path(\"/geonames\")\n"
+                + "public class GeoResource {\n"
+                + "    /** Cities under hierarchy.\n"
+                + "     * @api.status 200 empty Partial list of cities.\n"
+                + "     * @api.example {\"list\":[{\"name\":\"Paris\"}]}\n"
+                + "     */\n"
+                + "    @GET\n"
+                + "    @Path(\"/cities/{items:.*}\")\n"
+                + "    public Object cities(@PathParam(\"items\") String items) { return null; }\n"
+                + "\n"
+                + "    /** Metrics for a property.\n"
+                + "     * @api.status 200 empty Metric map.\n"
+                + "     * @api.example {\"sum\":10.0}\n"
+                + "     */\n"
+                + "    @GET\n"
+                + "    @Path(\"/metrics/{metricTypes:((sum|avg)/?)*}\")\n"
+                + "    public Object metrics(@PathParam(\"metricTypes\") String metricTypes) { return null; }\n"
+                + "}\n");
+
+        JaxrsSourceScanner scanner = new JaxrsSourceScanner(
+                List.of(dir), List.of(), List.of(), "api.status", "test-bundle", Map.of());
+        DocPack pack = scanner.scan();
+        assertEquals(2, pack.getOperations().size());
+        assertEquals("GET /geonames/cities/{items}", pack.getOperations().get(0).getOperationKey());
+        assertEquals("/geonames/cities/{items}", pack.getOperations().get(0).getPath());
+        assertEquals("GET /geonames/metrics/{metricTypes}", pack.getOperations().get(1).getOperationKey());
+        assertEquals("/geonames/metrics/{metricTypes}", pack.getOperations().get(1).getPath());
+    }
+
     @Test
     void scansSchemaFieldsEnumsAndExamples() throws Exception {
         Path dir = Files.createTempDirectory("openapi-doc-scan");
