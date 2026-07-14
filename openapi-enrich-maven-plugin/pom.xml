@@ -20,7 +20,7 @@
     <parent>
         <groupId>dev.inoyu.openapi</groupId>
         <artifactId>openapi-enrich</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>openapi-enrich-maven-plugin</artifactId>

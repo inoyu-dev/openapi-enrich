@@ -18,7 +18,7 @@ This reactor publishes under `dev.inoyu.openapi` (namespace rooted at [inoyu.dev
 ```
 
 3. **GPG** — Signing key on a public keyserver; Maven configured (`gpg.keyname` / agent). Release profile signs with pinentry loopback.
-4. **SCM** — Root `pom.xml` `scm` uses HTTPS for both `connection` and `developerConnection` (matches the `origin` remote; needed for `release:prepare` push). If you switch to SSH remotes later, SSH GitHub auth must work for pushes.
+4. **SCM** — Root `pom.xml` `scm` uses HTTPS for both `connection` and `developerConnection` (matches the `origin` remote). The release plugin also sets `<connectionUrl>` to the same HTTPS URL so maven-scm does not rewrite pushes to `ssh://git@github.com` (that rewrite causes `Permission denied (publickey)` when no GitHub SSH key is loaded).
 
 ### Why `deploy` of `*-SNAPSHOT` got HTTP 403
 
