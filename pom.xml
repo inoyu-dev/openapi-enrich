@@ -52,9 +52,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/inoyu-dev/openapi-enrich.git</connection>
-        <!-- HTTPS: day-to-day remotes and release:prepare pushes (SSH key not required). -->
-        <developerConnection>scm:git:https://github.com/inoyu-dev/openapi-enrich.git</developerConnection>
+        <!-- Pipe delimiter: colons in https:// break maven-scm (clone uses URL as branch). -->
+        <connection>scm:git|https://github.com/inoyu-dev/openapi-enrich.git</connection>
+        <developerConnection>scm:git|https://github.com/inoyu-dev/openapi-enrich.git</developerConnection>
         <url>https://github.com/inoyu-dev/openapi-enrich</url>
         <tag>HEAD</tag>
     </scm>
@@ -198,8 +198,8 @@
                         <releaseProfiles>release</releaseProfiles>
                         <goals>deploy</goals>
                         <pushChanges>true</pushChanges>
-                        <!-- Pin HTTPS: maven-scm otherwise rewrites GitHub URLs to ssh:// and release:prepare fails without an SSH key. -->
-                        <connectionUrl>scm:git:https://github.com/inoyu-dev/openapi-enrich.git</connectionUrl>
+                        <!-- Pipe form required so https:// is not split on ':' (see PUBLISHING.md). -->
+                        <connectionUrl>scm:git|https://github.com/inoyu-dev/openapi-enrich.git</connectionUrl>
                     </configuration>
                 </plugin>
                 <plugin>

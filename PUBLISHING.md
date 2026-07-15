@@ -18,7 +18,7 @@ This reactor publishes under `dev.inoyu.openapi` (namespace rooted at [inoyu.dev
 ```
 
 3. **GPG** — Signing key on a public keyserver; Maven configured (`gpg.keyname` / agent). Release profile signs with pinentry loopback.
-4. **SCM** — Root `pom.xml` `scm` uses HTTPS for both `connection` and `developerConnection` (matches the `origin` remote). The release plugin also sets `<connectionUrl>` to the same HTTPS URL so maven-scm does not rewrite pushes to `ssh://git@github.com` (that rewrite causes `Permission denied (publickey)` when no GitHub SSH key is loaded).
+4. **SCM** — Use the pipe form `scm:git|https://github.com/inoyu-dev/openapi-enrich.git` for `connection` / `developerConnection` / release `<connectionUrl>`. The colon form `scm:git:https://...` breaks maven-scm parsing so `release:perform` runs `git clone --branch https://... checkout` and fails with `repository 'checkout' does not exist`.
 
 ### Why `deploy` of `*-SNAPSHOT` got HTTP 403
 
@@ -48,6 +48,12 @@ mvn release:prepare
 mvn release:perform
 ```
 
+If prepare finished manually (or `release.properties` was deleted), re-run perform with the tag:
+
+```bash
+mvn release:perform -Dtag=v0.1.0
+# ensure GPG can prompt: export GPG_TTY=$(tty)
+```
 What that does:
 
 1. **prepare** — asks for release version (e.g. `0.1.0`) and next SNAPSHOT (`0.1.1-SNAPSHOT`), runs tests, commits, tags `v0.1.0`, pushes tag + POMs.
